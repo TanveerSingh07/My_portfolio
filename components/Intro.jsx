@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, animate } from "framer-motion";
+import Image from "next/image";
 
 const PATH = "M -40 380 C 180 60, 420 520, 680 160 S 1180 40, 1460 300";
 const VIEW_W = 1400;
@@ -19,7 +20,9 @@ export default function Intro({ onDone }) {
   // Sample the curved path into discrete points so the plane's flight works
   // identically across every browser (CSS offset-path isn't supported in Firefox).
   useEffect(() => {
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
     const seen = sessionStorage.getItem("intro-seen");
     if (reduced || seen) {
       setSkip(true);
@@ -69,16 +72,20 @@ export default function Intro({ onDone }) {
       return (Math.atan2(dy, dx) * 180) / Math.PI;
     });
 
-    const controls = animate(planeRef.current, {
-      left: xs,
-      top: ys,
-      rotate: rotations,
-      opacity: [0, 1, 1, 1, 0.6],
-      scale: [0.6, 1, 1, 1, 0.8],
-    }, {
-      duration: FLIGHT_MS / 1000,
-      ease: [0.45, 0.05, 0.55, 0.95],
-    });
+    const controls = animate(
+      planeRef.current,
+      {
+        left: xs,
+        top: ys,
+        rotate: rotations,
+        opacity: [0, 1, 1, 1, 0.6],
+        scale: [0.6, 1, 1, 1, 0.8],
+      },
+      {
+        duration: FLIGHT_MS / 1000,
+        ease: [0.45, 0.05, 0.55, 0.95],
+      },
+    );
     return () => controls.stop();
   }, [points]);
 
@@ -89,7 +96,10 @@ export default function Intro({ onDone }) {
       {phase !== "done" && (
         <motion.div
           className="fixed inset-0 z-[100] bg-paper flex items-center justify-center overflow-hidden"
-          exit={{ opacity: 0, transition: { duration: 0.55, ease: "easeInOut" } }}
+          exit={{
+            opacity: 0,
+            transition: { duration: 0.55, ease: "easeInOut" },
+          }}
         >
           {/* faint radial glow following the destination point */}
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_45%,rgba(74,108,247,0.08),transparent_55%)]" />
@@ -113,7 +123,10 @@ export default function Intro({ onDone }) {
                 strokeLinecap="round"
                 initial={{ pathLength: 0 }}
                 animate={{ pathLength: 1 }}
-                transition={{ duration: FLIGHT_MS / 1000, ease: [0.45, 0.05, 0.55, 0.95] }}
+                transition={{
+                  duration: FLIGHT_MS / 1000,
+                  ease: [0.45, 0.05, 0.55, 0.95],
+                }}
               />
             )}
           </svg>
@@ -140,15 +153,25 @@ export default function Intro({ onDone }) {
                 transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
                 style={{ perspective: 800 }}
               >
-                <div className="relative w-24 h-24 rounded-full bg-white shadow-lift flex items-center justify-center">
-                  <span className="font-display italic text-3xl text-accent">TD</span>
+                <div className="relative w-24 h-24 rounded-full overflow-hidden bg-white shadow-lift">
+                  <Image
+                    src="/images/My_pic.jpeg"
+                    alt="Tanveer Singh Dhanjal"
+                    fill
+                    priority
+                    className="object-cover object-top"
+                  />
                   {[0, 1].map((ring) => (
                     <motion.div
                       key={ring}
                       className="absolute inset-0 rounded-full border border-accent/30"
                       initial={{ scale: 1, opacity: 0.6 }}
                       animate={{ scale: 2 + ring * 0.6, opacity: 0 }}
-                      transition={{ duration: 1.2, delay: ring * 0.25, ease: "easeOut" }}
+                      transition={{
+                        duration: 1.2,
+                        delay: ring * 0.25,
+                        ease: "easeOut",
+                      }}
                     />
                   ))}
                 </div>
@@ -193,7 +216,13 @@ function PaperPlane() {
         strokeWidth="1.4"
         strokeLinejoin="round"
       />
-      <path d="M21 27 L41 6 L28 41 Z" fill="#4A6CF7" fillOpacity="0.22" stroke="#4A6CF7" strokeWidth="1" />
+      <path
+        d="M21 27 L41 6 L28 41 Z"
+        fill="#4A6CF7"
+        fillOpacity="0.22"
+        stroke="#4A6CF7"
+        strokeWidth="1"
+      />
     </svg>
   );
 }

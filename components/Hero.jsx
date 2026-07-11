@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Download, Mail } from "lucide-react";
 import { profile } from "@/lib/data";
+import Image from "next/image";
 
 function MagneticButton({ children, className, href, ...props }) {
   const ref = useRef(null);
@@ -54,7 +55,9 @@ function TerminalLine() {
     <div className="font-mono text-[12px] text-ink-soft flex items-center gap-1.5">
       <span className="text-accent">➜</span>
       <span>{text}</span>
-      <span className={`w-1.5 h-3.5 bg-ink-soft inline-block ${showCursor ? "animate-blink" : "opacity-0"}`} />
+      <span
+        className={`w-1.5 h-3.5 bg-ink-soft inline-block ${showCursor ? "animate-blink" : "opacity-0"}`}
+      />
     </div>
   );
 }
@@ -70,7 +73,10 @@ export default function Hero() {
   }, []);
 
   return (
-    <section id="top" className="relative min-h-[92vh] flex items-center pt-28 pb-16 overflow-hidden">
+    <section
+      id="top"
+      className="relative min-h-[92vh] flex items-center pt-28 pb-16 overflow-hidden"
+    >
       {/* ambient floating code snippet, decorative */}
       <motion.div
         initial={{ opacity: 0, x: 30 }}
@@ -83,10 +89,18 @@ export default function Hero() {
           <span className="w-2.5 h-2.5 rounded-full bg-[#E7D28C]" />
           <span className="w-2.5 h-2.5 rounded-full bg-[#9CD98C]" />
         </div>
-        <p><span className="text-accent">const</span> dev = {"{"}</p>
-        <p className="pl-3">stack: <span className="text-clay">'MERN'</span>,</p>
-        <p className="pl-3">status: <span className="text-clay">'shipping'</span>,</p>
-        <p className="pl-3">open_to: <span className="text-clay">'freelance'</span></p>
+        <p>
+          <span className="text-accent">const</span> dev = {"{"}
+        </p>
+        <p className="pl-3">
+          stack: <span className="text-clay">'MERN'</span>,
+        </p>
+        <p className="pl-3">
+          status: <span className="text-clay">'shipping'</span>,
+        </p>
+        <p className="pl-3">
+          open_to: <span className="text-clay">'freelance'</span>
+        </p>
         <p>{"}"}</p>
       </motion.div>
 
@@ -104,7 +118,11 @@ export default function Hero() {
           <motion.h1
             initial={{ opacity: 0, y: 22 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.75, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            transition={{
+              duration: 0.75,
+              delay: 0.1,
+              ease: [0.22, 1, 0.36, 1],
+            }}
             className="font-display text-[13vw] leading-[0.98] md:text-6xl lg:text-7xl text-ink text-balance"
           >
             {profile.name}
@@ -179,9 +197,13 @@ export default function Hero() {
         >
           <div className="absolute -inset-3 rounded-[2.5rem] border border-accent/25" />
           <div className="w-full h-full rounded-[2.25rem] bg-white shadow-lift overflow-hidden flex items-center justify-center border border-line">
-            <div className="w-full h-full bg-gradient-to-br from-accent-dim to-paper-dim flex items-center justify-center">
-              <span className="font-display italic text-6xl text-accent">TD</span>
-            </div>
+            <Image
+              src="/images/My_pic.jpeg"
+              alt="Tanveer Singh Dhanjal"
+              fill
+              priority
+              className="object-cover object-[center_20%]"
+            />
           </div>
           <motion.div
             animate={{ y: [0, -8, 0] }}
