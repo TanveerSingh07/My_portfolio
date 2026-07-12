@@ -34,8 +34,15 @@ export default function Journey() {
     target: trackRef,
     offset: ["start center", "end center"],
   });
-  const markerTop = useTransform(scrollYProgress, (v) => `${Math.min(Math.max(v, 0), 1) * 100}%`);
-  const markerRotate = useTransform(scrollYProgress, [0, 0.05, 0.95, 1], [0, 20, -20, 0]);
+  const markerTop = useTransform(
+    scrollYProgress,
+    (v) => `${Math.min(Math.max(v, 0), 1) * 100}%`,
+  );
+  const markerRotate = useTransform(
+    scrollYProgress,
+    [0, 0.05, 0.95, 1],
+    [0, 20, -20, 0],
+  );
 
   return (
     <section id="journey" className="relative py-28 md:py-36">
@@ -43,7 +50,7 @@ export default function Journey() {
         <SectionHeading
           eyebrow="the road so far"
           title="My Journey"
-          desc="Not a resume bullet list — the actual path from curiosity to shipped products."
+          desc="Every milestone taught me something new, taking me from curiosity to creating products that people can actually use."
         />
 
         <div ref={trackRef} className="relative mt-20">
@@ -65,7 +72,7 @@ export default function Journey() {
             />
           </motion.div>
 
-          <div className="flex flex-col gap-14 md:gap-0">
+          <div className="flex flex-col gap-14 md:gap-2">
             {journey.map((item, i) => (
               <MilestoneRow key={item.title} item={item} index={i} />
             ))}
@@ -83,23 +90,36 @@ function MilestoneRow({ item, index }) {
   const Icon = ICONS[item.icon] || Sparkles;
 
   return (
-    <div className="md:grid md:grid-cols-2 md:gap-16 md:py-14 relative">
-      <div className={`hidden md:flex ${leftSide ? "justify-end" : "col-start-2 justify-start"}`}>
+    <div className="relative md:grid md:grid-cols-2 md:gap-20 md:py-20 items-center">
+      {/* LEFT SIDE */}
+      <div className="hidden md:flex justify-end pr-10">
         {leftSide ? (
           <MilestoneCard item={item} align="right" index={index} />
         ) : (
-          <DecorativeSide item={item} Icon={Icon} index={index} align="left" />
-        )}
-      </div>
-      <div className={`hidden md:flex ${leftSide ? "col-start-2 justify-start" : "justify-end"}`}>
-        {!leftSide ? (
-          <MilestoneCard item={item} align="left" index={index} />
-        ) : (
-          <DecorativeSide item={item} Icon={Icon} index={index} align="right" />
+          <DecorativeSide
+            item={item}
+            Icon={Icon}
+            index={index}
+            align="left"
+          />
         )}
       </div>
 
-      {/* node */}
+      {/* RIGHT SIDE */}
+      <div className="hidden md:flex justify-start pl-10">
+        {leftSide ? (
+          <DecorativeSide
+            item={item}
+            Icon={Icon}
+            index={index}
+            align="right"
+          />
+        ) : (
+          <MilestoneCard item={item} align="left" index={index} />
+        )}
+      </div>
+
+      {/* Timeline node */}
       <motion.div
         variants={fadeUp}
         initial="hidden"
@@ -109,7 +129,7 @@ function MilestoneRow({ item, index }) {
         className="absolute left-[15px] md:left-1/2 top-0 md:top-1/2 -translate-x-1/2 md:-translate-y-1/2 w-[13px] h-[13px] rounded-full bg-accent ring-4 ring-accent-dim z-10"
       />
 
-      {/* mobile card */}
+      {/* Mobile */}
       <div className="md:hidden pl-10">
         <MilestoneCard item={item} align="left" index={index} />
       </div>
@@ -131,7 +151,9 @@ function MilestoneCard({ item, align, index }) {
     >
       <span className="eyebrow text-accent">{item.year}</span>
       <h3 className="font-display text-xl mt-2 text-ink">{item.title}</h3>
-      <p className="text-ink-soft text-sm mt-2 leading-relaxed">{item.detail}</p>
+      <p className="text-ink-soft text-sm mt-2 leading-relaxed">
+        {item.detail}
+      </p>
     </motion.div>
   );
 }
@@ -139,6 +161,8 @@ function MilestoneCard({ item, align, index }) {
 // Fills the side of the row that has no card: a large ghost numeral for the
 // year plus a floating icon badge, tied back to the node with a short dashed lead-in.
 function DecorativeSide({ item, Icon, index, align }) {
+  const right = align === "right";
+
   return (
     <motion.div
       variants={fadeUp}
@@ -146,28 +170,40 @@ function DecorativeSide({ item, Icon, index, align }) {
       whileInView="show"
       viewport={viewportOnce}
       custom={index}
-      className={`relative w-full max-w-md h-full min-h-[120px] flex items-center ${
-        align === "right" ? "justify-end pr-2" : "justify-start pl-2"
+      className={`relative w-full max-w-md min-h-[140px] flex items-center ${
+        right ? "justify-start" : "justify-end"
       }`}
     >
-      <div className={`relative flex items-center gap-5 ${align === "right" ? "flex-row-reverse" : ""}`}>
-        <motion.div
-          animate={{ y: [0, -10, 0] }}
-          transition={{ duration: 5 + (index % 3), repeat: Infinity, ease: "easeInOut" }}
-          className="relative shrink-0 w-16 h-16 rounded-2xl bg-white border border-line shadow-soft flex items-center justify-center text-accent"
-        >
-          <Icon size={24} strokeWidth={1.75} />
-          <span className="absolute -bottom-1.5 -right-1.5 w-4 h-4 rounded-full bg-accent-dim border border-line" />
-        </motion.div>
+      <div
+        className={`flex items-center gap-8 ${
+          right ? "" : "flex-row-reverse"
+        }`}
+      >
+        {/* Number (always near the timeline) */}
         <span
           className="font-display italic text-7xl md:text-8xl leading-none select-none"
           style={{
-            color: "transparent",
+            color: "#6E6B60",
             WebkitTextStroke: "1px #E7E1D2",
           }}
         >
           {String(index + 1).padStart(2, "0")}
         </span>
+
+        {/* Icon (always outer side) */}
+        <motion.div
+          animate={{ y: [0, -10, 0] }}
+          transition={{
+            duration: 5 + (index % 3),
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="relative shrink-0 w-16 h-16 rounded-2xl bg-white border border-line shadow-soft flex items-center justify-center text-accent"
+        >
+          <Icon size={24} strokeWidth={1.75} />
+
+          <span className="absolute -bottom-1.5 -right-1.5 w-4 h-4 rounded-full bg-accent-dim border border-line" />
+        </motion.div>
       </div>
     </motion.div>
   );
@@ -180,16 +216,55 @@ function StatsGrid() {
       initial="hidden"
       whileInView="show"
       viewport={viewportOnce}
-      className="mt-24 bg-white border border-line rounded-3xl shadow-soft p-8 md:p-10 grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10"
+      className="relative mt-24 overflow-hidden rounded-3xl border border-line bg-white shadow-soft"
     >
-      {stats.map((s) => (
-        <div key={s.label} className="text-center md:text-left">
-          <p className="font-display text-3xl md:text-4xl text-ink">
-            <CountUp value={s.value} suffix={s.suffix} decimals={s.decimals || 0} />
-          </p>
-          <p className="text-ink-soft text-xs md:text-sm mt-1.5">{s.label}</p>
-        </div>
-      ))}
+      {/* subtle background glow */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(74,108,247,0.05),transparent_45%)] pointer-events-none" />
+
+      {/* subtle grid pattern */}
+      <div
+        className="absolute inset-0 opacity-[0.025] pointer-events-none"
+        style={{
+          backgroundImage: `
+            linear-gradient(to right, #000 1px, transparent 1px),
+            linear-gradient(to bottom, #000 1px, transparent 1px)
+          `,
+          backgroundSize: "36px 36px",
+        }}
+      />
+
+      <div className="relative grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10 p-8 md:p-10">
+        {stats.map((s) => (
+          <motion.div
+            key={s.label}
+            whileHover={{ y: -5 }}
+            transition={{ duration: 0.25 }}
+            className="group"
+          >
+            {/* terminal label */}
+            <p className="font-mono text-[12px] uppercase tracking-[0.18em] text-accent">
+              $ {s.label.toLowerCase().replace(/\s+/g, "_")}
+            </p>
+
+            {/* number */}
+            <p className="mt-3 font-display text-3xl md:text-4xl text-ink transition-colors duration-300 group-hover:text-accent">
+              <CountUp
+                value={s.value}
+                suffix={s.suffix}
+                decimals={s.decimals || 0}
+              />
+            </p>
+
+            {/* divider */}
+            <div className="mt-3 h-px w-12 bg-accent/30 transition-all duration-300 group-hover:w-20 group-hover:bg-accent" />
+
+            {/* description */}
+            <p className="mt-3 text-sm text-ink-soft transition-colors duration-300 group-hover:text-ink">
+              {s.label}
+            </p>
+          </motion.div>
+        ))}
+      </div>
     </motion.div>
   );
 }

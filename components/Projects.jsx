@@ -7,6 +7,7 @@ import { projects } from "@/lib/data";
 import { SectionHeading } from "./Journey";
 import { fadeUp, viewportOnce } from "@/lib/motion";
 import ProjectModal from "./ProjectModal";
+import Image from "next/image";
 
 export default function Projects() {
   const [openProject, setOpenProject] = useState(null);

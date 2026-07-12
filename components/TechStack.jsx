@@ -58,7 +58,7 @@ export default function TechStack() {
         <SectionHeading
           eyebrow="the workspace"
           title="Tools I actually reach for"
-          desc="Not a skill bar in sight. Every tool orbits the stack it belongs to — hover or tap one to see where it's actually been used."
+          desc="A collection of the tools I enjoy working with, each one backed by real projects and hands-on experience."
         />
 
         <div className="mt-16 grid lg:grid-cols-[1.3fr_1fr] gap-8 items-center">
