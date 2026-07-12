@@ -24,44 +24,72 @@ const SOCIALS = [
   { icon: Code2, label: "LeetCode", href: profile.leetcode },
 ];
 
-const KEY_NOT_SET = !profile.web3formsKey || profile.web3formsKey === "YOUR_WEB3FORMS_ACCESS_KEY";
+const KEY_NOT_SET =
+  !profile.web3formsKey || profile.web3formsKey === "YOUR_WEB3FORMS_ACCESS_KEY";
 
 export default function Contact() {
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
-  const [copied, setCopied] = useState(false);
-  const [sendState, setSendState] = useState("idle"); // idle | sending | sent | error
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
 
-  const handleChange = (e) => setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
+  const [copied, setCopied] = useState(false);
+  const [sendState, setSendState] = useState("idle");
+
+  const handleChange = (e) =>
+    setForm((f) => ({
+      ...f,
+      [e.target.name]: e.target.value,
+    }));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // No key configured yet — fall back to opening the visitor's email client
-    // pre-filled, so the form still works out of the box.
     if (KEY_NOT_SET) {
-      const subject = encodeURIComponent(`Project inquiry from ${form.name || "your site"}`);
-      const body = encodeURIComponent(`${form.message}\n\n— ${form.name}${form.email ? ` (${form.email})` : ""}`);
+      const subject = encodeURIComponent(
+        `Project inquiry from ${form.name || "Portfolio"}`,
+      );
+
+      const body = encodeURIComponent(
+        `${form.message}
+
+— ${form.name}
+${form.email}`,
+      );
+
       window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`;
+
       return;
     }
 
     setSendState("sending");
+
     try {
       const res = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
         body: JSON.stringify({
           access_key: profile.web3formsKey,
-          subject: `Portfolio inquiry from ${form.name}`,
+          subject: `Portfolio Inquiry`,
           from_name: form.name,
           email: form.email,
           message: form.message,
         }),
       });
+
       const json = await res.json();
+
       if (json.success) {
         setSendState("sent");
-        setForm({ name: "", email: "", message: "" });
+        setForm({
+          name: "",
+          email: "",
+          message: "",
+        });
       } else {
         setSendState("error");
       }
@@ -71,13 +99,12 @@ export default function Contact() {
   };
 
   const copyEmail = async () => {
-    try {
-      await navigator.clipboard.writeText(profile.email);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1800);
-    } catch {
-      // clipboard unavailable — no-op, mailto link still works
-    }
+    await navigator.clipboard.writeText(profile.email);
+    setCopied(true);
+
+    setTimeout(() => {
+      setCopied(false);
+    }, 1800);
   };
 
   return (
@@ -88,85 +115,201 @@ export default function Contact() {
           initial="hidden"
           whileInView="show"
           viewport={viewportOnce}
-          className="text-center max-w-2xl mx-auto"
+          className="max-w-3xl mx-auto text-center"
         >
           <p className="eyebrow text-accent mb-4">let's build something</p>
-          <h2 className="font-display text-4xl md:text-6xl text-ink text-balance">
-            Have a product in mind? <span className="italic text-accent">Let's ship it.</span>
-          </h2>
-          <p className="text-ink-soft mt-5 text-base md:text-lg">
-            Open to freelance projects, internships, and full-stack collaborations. I usually reply within a day.
-          </p>
-        </motion.div>
 
-        <div className="mt-16 grid lg:grid-cols-[0.8fr_1.2fr] gap-6">
-          {/* left: quick actions */}
+          <h2 className="font-display text-5xl md:text-7xl text-balance text-ink">
+            Have a product in mind?
+            <br />
+            <span className="italic text-accent">Let's ship it.</span>
+          </h2>
+
+          <p className="mt-6 text-lg text-ink-soft">
+            Open to internships, freelance work and full-stack collaborations.
+          </p>
+
+          <div className="mt-8 flex justify-center">
+            <div className="rounded-full bg-paper-dim border border-line px-5 py-2 font-mono text-xs text-ink-soft">
+              git commit -m "Looking forward to building something together."
+            </div>
+          </div>
+
+        </motion.div>
+        <div className="mt-16 grid lg:grid-cols-[340px_1fr] gap-6 items-start">
+          {/* LEFT DASHBOARD */}
+
           <motion.div
             variants={fadeUp}
             initial="hidden"
             whileInView="show"
             viewport={viewportOnce}
-            custom={1}
-            className="flex flex-col gap-4"
+            className="flex flex-col gap-4 lg:sticky lg:top-28 h-fit"
           >
+            {/* CONTACT EMAIL */}
+
             <button
               onClick={copyEmail}
-              className="bg-ink text-paper rounded-2xl p-6 text-left hover:bg-accent transition-colors group"
+              className="group relative overflow-hidden rounded-3xl border border-line bg-white p-5 shadow-soft hover:shadow-card transition-all duration-300 text-left"
             >
-              <div className="flex items-center justify-between">
-                <Mail size={20} />
-                {copied ? <Check size={16} /> : <Copy size={16} className="opacity-60 group-hover:opacity-100" />}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(circle_at_top_right,rgba(176,104,55,0.08),transparent_60%)]" />
+
+              <div className="relative flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-11 h-11 rounded-2xl bg-paper-dim flex items-center justify-center text-accent">
+                    <Mail size={20} />
+                  </div>
+
+                  <div>
+                    <p className="font-mono text-[11px] tracking-[0.18em] text-ink-faint">
+                      CONTACT.EMAIL
+                    </p>
+
+                    <p className="mt-1 font-medium text-ink">
+                      {copied ? "Copied!" : profile.email}
+                    </p>
+                  </div>
+                </div>
+
+                {copied ? (
+                  <Check size={18} className="text-accent" />
+                ) : (
+                  <Copy size={18} className="text-ink-faint" />
+                )}
               </div>
-              <p className="mt-4 text-sm text-paper/60">Email</p>
-              <p className="font-display text-lg mt-0.5">{copied ? "Copied!" : profile.email}</p>
+
+              <div className="mt-5 flex items-center justify-between text-xs font-mono">
+                <span className="text-ink-faint">
+                  status:
+                  <span className="text-accent ml-2">active</span>
+                </span>
+
+                <span className="text-ink-faint">
+                  response
+                  <span className="text-accent ml-2">{"<24h"}</span>
+                </span>
+              </div>
             </button>
+
+            {/* CHAT */}
 
             <a
               href={profile.whatsapp}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-[#25D366]/10 border border-[#25D366]/30 rounded-2xl p-6 hover:bg-[#25D366]/15 transition-colors group"
+              className="group relative block overflow-hidden rounded-3xl border border-line bg-white p-5 shadow-soft hover:shadow-card transition-all duration-300"
             >
-              <div className="flex items-center justify-between text-[#128C4A]">
-                <MessageCircle size={20} />
-                <ArrowUpRight size={16} className="opacity-50 group-hover:opacity-100 transition-opacity" />
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(circle_at_top_right,rgba(37,211,102,0.08),transparent_60%)]" />
+
+              <div className="relative flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-11 h-11 rounded-2xl bg-[#25D366]/10 flex items-center justify-center text-[#25D366]">
+                    <MessageCircle size={20} />
+                  </div>
+
+                  <div>
+                    <p className="font-mono text-[11px] tracking-[0.18em] text-ink-faint">
+                      CONTACT.CHAT
+                    </p>
+
+                    <p className="mt-1 font-medium text-ink">WhatsApp</p>
+                  </div>
+                </div>
+
+                <ArrowUpRight
+                  size={18}
+                  className="text-ink-faint group-hover:text-accent transition-colors"
+                />
               </div>
-              <p className="mt-4 text-sm text-[#128C4A]/70">WhatsApp</p>
-              <p className="font-display text-lg mt-0.5 text-[#128C4A]">Message me directly</p>
+
+              <div className="mt-5 flex items-center justify-between text-xs font-mono">
+                <span className="text-ink-faint">availability</span>
+
+                <span className="text-[#25D366]">online ●</span>
+              </div>
             </a>
+
+            {/* FILE */}
 
             <a
               href={profile.resumeFile}
               download
-              className="bg-white border border-line rounded-2xl p-6 hover:border-accent hover:shadow-card transition-all group"
+              className="group relative block overflow-hidden rounded-3xl border border-line bg-white p-5 shadow-soft hover:shadow-card transition-all duration-300"
             >
-              <div className="flex items-center justify-between text-ink">
-                <Download size={20} />
-                <ArrowUpRight size={16} className="opacity-40 group-hover:opacity-100 group-hover:text-accent transition-all" />
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(circle_at_top_right,rgba(176,104,55,0.08),transparent_60%)]" />
+
+              <div className="relative flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-11 h-11 rounded-2xl bg-paper-dim flex items-center justify-center text-accent">
+                    <Download size={20} />
+                  </div>
+
+                  <div>
+                    <p className="font-mono text-[11px] tracking-[0.18em] text-ink-faint">
+                      FILES
+                    </p>
+
+                    <p className="mt-1 font-medium text-ink">resume.pdf</p>
+                  </div>
+                </div>
+
+                <ArrowUpRight
+                  size={18}
+                  className="text-ink-faint group-hover:text-accent transition-colors"
+                />
               </div>
-              <p className="mt-4 text-sm text-ink-soft">Download</p>
-              <p className="font-display text-lg mt-0.5 text-ink">Full resume (PDF)</p>
+
+              <div className="mt-5 flex items-center justify-between text-xs font-mono">
+                <span className="text-ink-faint">updated</span>
+
+                <span className="text-accent">July 2026</span>
+              </div>
             </a>
 
-            <div className="grid grid-cols-3 gap-3">
-              {SOCIALS.map((s) => (
-                <a
-                  key={s.label}
-                  href={s.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-white border border-line rounded-2xl p-4 flex flex-col items-center gap-2 hover:border-accent hover:text-accent hover:shadow-card transition-all text-ink-soft"
-                >
-                  <s.icon size={18} />
-                  <span className="text-[11px] font-medium">{s.label}</span>
-                </a>
-              ))}
-            </div>
+            {/* SOCIALS */}
 
-            <p className="text-xs text-ink-faint mt-1">{profile.location}</p>
+            <div className="rounded-3xl border border-line bg-white p-5 shadow-soft">
+              <div className="flex items-center justify-between mb-5">
+                <p className="font-mono text-[11px] tracking-[0.18em] text-ink-faint">
+                  SOCIALS
+                </p>
+
+                <span className="text-xs text-ink-faint">connect</span>
+              </div>
+
+              <div className="grid grid-cols-3 gap-3">
+                {SOCIALS.map((s) => (
+                  <a
+                    key={s.label}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group rounded-2xl border border-line bg-paper p-4 hover:border-accent hover:-translate-y-1 transition-all"
+                  >
+                    <div className="flex flex-col items-center">
+                      <s.icon
+                        size={20}
+                        className="text-ink-soft group-hover:text-accent transition-colors"
+                      />
+
+                      <span className="mt-3 text-[11px] font-medium text-ink-soft group-hover:text-ink transition-colors">
+                        {s.label}
+                      </span>
+                    </div>
+                  </a>
+                ))}
+              </div>
+
+              <div className="mt-5 pt-5 border-t border-line">
+                <p className="font-mono text-[11px] text-ink-faint">LOCATION</p>
+
+                <p className="mt-2 text-sm text-ink">{profile.location}</p>
+              </div>
+            </div>
           </motion.div>
 
-          {/* right: form */}
+          {/* RIGHT : MESSAGE EDITOR */}
+
           <motion.form
             variants={fadeUp}
             initial="hidden"
@@ -174,87 +317,143 @@ export default function Contact() {
             viewport={viewportOnce}
             custom={2}
             onSubmit={handleSubmit}
-            className="bg-white border border-line rounded-3xl shadow-soft p-8 md:p-10 flex flex-col gap-5"
+            className="group relative min-h-[520px] overflow-hidden rounded-3xl border border-line bg-white shadow-soft hover:shadow-card transition-all duration-300"
           >
-            <div className="grid sm:grid-cols-2 gap-5">
-              <Field label="Your name">
-                <input
-                  required
-                  name="name"
-                  value={form.name}
-                  onChange={handleChange}
-                  placeholder="Jane Doe"
-                  className="w-full bg-paper-dim rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-accent/40 transition-shadow"
-                />
-              </Field>
-              <Field label="Your email">
-                <input
-                  required
-                  type="email"
-                  name="email"
-                  value={form.email}
-                  onChange={handleChange}
-                  placeholder="jane@company.com"
-                  className="w-full bg-paper-dim rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-accent/40 transition-shadow"
-                />
-              </Field>
+            {/* Hover Glow */}
+
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(circle_at_top_right,rgba(176,104,55,0.08),transparent_60%)]" />
+
+            {/* Editor Header */}
+
+            <div className="relative flex items-center justify-between px-6 py-4 border-b border-line bg-paper-dim">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#E86A5B]" />
+                <span className="w-2.5 h-2.5 rounded-full bg-[#E8C05B]" />
+                <span className="w-2.5 h-2.5 rounded-full bg-[#62C462]" />
+
+                <span className="ml-3 font-mono text-xs text-ink-faint">
+                  contact.tsx
+                </span>
+              </div>
+
+              <span className="font-mono text-xs text-accent">
+                compose.message()
+              </span>
             </div>
-            <Field label="Project details">
-              <textarea
-                required
-                name="message"
-                value={form.message}
-                onChange={handleChange}
-                rows={5}
-                placeholder="Tell me a bit about what you're building..."
-                className="w-full bg-paper-dim rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-accent/40 transition-shadow resize-none"
-              />
-            </Field>
 
-            <button
-              type="submit"
-              disabled={sendState === "sending"}
-              className="self-start inline-flex items-center gap-2 bg-ink text-paper px-6 py-3.5 rounded-full text-sm font-medium hover:bg-accent transition-colors disabled:opacity-60"
-            >
-              {sendState === "sending" ? (
-                <>
-                  <Loader2 size={15} className="animate-spin" /> Sending…
-                </>
-              ) : (
-                <>
-                  Send message <ArrowUpRight size={15} />
-                </>
+            {/* Body */}
+
+            <div className="relative p-7 space-y-6">
+              <div className="grid sm:grid-cols-2 gap-5">
+                <Field label="const name">
+                  <input
+                    required
+                    name="name"
+                    value={form.name}
+                    onChange={handleChange}
+                    placeholder="John Doe"
+                    className="w-full rounded-xl bg-paper-dim px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-accent/40"
+                  />
+                </Field>
+
+                <Field label="const email">
+                  <input
+                    required
+                    type="email"
+                    name="email"
+                    value={form.email}
+                    onChange={handleChange}
+                    placeholder="john@email.com"
+                    className="w-full rounded-xl bg-paper-dim px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-accent/40"
+                  />
+                </Field>
+              </div>
+
+              <Field label="project.md">
+                <textarea
+                  required
+                  rows={6}
+                  name="message"
+                  value={form.message}
+                  onChange={handleChange}
+                  placeholder="Tell me about your project, idea, or opportunity..."
+                  className="w-full resize-none rounded-xl bg-paper-dim px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-accent/40"
+                />
+              </Field>
+
+              {/* Footer */}
+
+              <div className="flex flex-wrap items-center justify-between gap-5 pt-3">
+                <div>
+                  <p className="font-mono text-[11px] uppercase text-ink-faint">
+                    Status
+                  </p>
+
+                  <p className="mt-2 text-sm text-ink">Ready to collaborate</p>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={sendState === "sending"}
+                  className="inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3.5 text-sm font-medium text-paper hover:bg-accent transition-colors disabled:opacity-60"
+                >
+                  {sendState === "sending" ? (
+                    <>
+                      <Loader2 size={15} className="animate-spin" />
+                      Shipping...
+                    </>
+                  ) : (
+                    <>
+                      Ship Message
+                      <ArrowUpRight size={15} />
+                    </>
+                  )}
+                </button>
+              </div>
+
+              {/* Status Messages */}
+
+              {sendState === "sent" && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="rounded-xl border border-accent/20 bg-accent/5 p-4"
+                >
+                  <p className="flex items-center gap-2 text-sm text-accent">
+                    <Check size={16} />
+                    Message shipped successfully. I'll get back to you soon.
+                  </p>
+                </motion.div>
               )}
-            </button>
 
-            {sendState === "sent" && (
-              <motion.p
-                initial={{ opacity: 0, y: -6 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex items-center gap-1.5 text-sm text-accent-deep -mt-1"
-              >
-                <Check size={14} /> Message sent — I'll get back to you soon.
-              </motion.p>
-            )}
-            {sendState === "error" && (
-              <motion.p
-                initial={{ opacity: 0, y: -6 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex items-center gap-1.5 text-sm text-clay -mt-1"
-              >
-                <AlertCircle size={14} /> Something went wrong — email me directly at {profile.email}.
-              </motion.p>
-            )}
-            {sendState === "idle" && (
-              <p className="text-xs text-ink-faint -mt-1">
-                {KEY_NOT_SET
-                  ? "Opens your email client with this pre-filled until a Web3Forms key is added."
-                  : "Delivered straight to my inbox — no third party ever sees it but Web3Forms."}
-              </p>
-            )}
+              {sendState === "error" && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="rounded-xl border border-red-200 bg-red-50 p-4"
+                >
+                  <p className="flex items-center gap-2 text-sm text-red-600">
+                    <AlertCircle size={16} />
+                    Something went wrong. Please email me directly.
+                  </p>
+                </motion.div>
+              )}
+
+              {sendState === "idle" && (
+                <div className="rounded-xl bg-paper-dim px-4 py-3">
+                  <p className="font-mono text-xs text-ink-faint">
+                    {KEY_NOT_SET
+                      ? "No backend configured • Opens your default mail client."
+                      : "Messages are delivered securely using Web3Forms."}
+                  </p>
+                </div>
+              )}
+            </div>
           </motion.form>
-        </div>
-      </div>
+        </div>{" "}
+        {/* grid */}
+      </div>{" "}
+      {/* container */}
     </section>
   );
 }
@@ -262,8 +461,13 @@ export default function Contact() {
 function Field({ label, children }) {
   return (
     <label className="block">
-      <span className="text-xs font-medium text-ink-soft mb-2 block">{label}</span>
+      <p className="mb-2 font-mono text-[11px] tracking-[0.18em] uppercase text-ink-faint">
+        {label}
+      </p>
+
       {children}
     </label>
   );
 }
+
+export { Field };
