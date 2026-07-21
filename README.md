@@ -49,7 +49,7 @@ Open `http://localhost:3000` to view the project locally.
 
 ## 📬 Connect With Me
 
-- **Portfolio:** https://your-portfolio-url.vercel.app
+- **Portfolio:** https://tanveersinghdhanjal.vercel.app/
 - **GitHub:** https://github.com/TanveerSingh07
 - **LinkedIn:** https://linkedin.com/in/tanveer-singh-dhanjal-07677b371
 - **Email:** tanveerdhanjal7@gmail.com
